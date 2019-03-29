@@ -42,11 +42,12 @@ def dist(p: Point, q: Point, sqrt=sqrt, fsum=fsum, zip=zip) -> float:
 def assign_data(centroids: Sequence[Centroid], data: Iterable[Point]) \
         -> Dict[Centroid, Sequence[Point]]:
     'Assign data the closest centroid'
-    d : DefaultDict[Centroid, List[Point]] = defaultdict(list)
+    d: DefaultDict[Centroid, List[Point]] = defaultdict(list)
     for point in data:
         #  __c:  Note how he does an argmin by use the "key" argument
         #   to "min" function
         centroid: Point = min(centroids, key=partial(dist, point))  # argmin_centroids(dist(centroid, point)) - type: ignore
+        # partial(dist, point) == lambda centroid: dist(point, centroid)
         d[centroid].append(point)
     return dict(d)
 
