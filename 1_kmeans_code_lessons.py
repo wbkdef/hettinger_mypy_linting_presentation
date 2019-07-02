@@ -1,4 +1,5 @@
-from typing import Tuple, Iterable, Sequence, List, Dict, DefaultDict
+from typing import Tuple, Iterable, Sequence, List, \
+    Dict, DefaultDict
 from random import sample
 from math import fsum, sqrt
 from collections import defaultdict
@@ -9,20 +10,23 @@ def partial(func, *args):
         return func(*args, *moreargs)
     return inner
 
-#  __c:  One can flexibly specify types with greater or lesser precision:
+#  __c:  One can flexibly specify types with greater or
+#   lesser precision:
 # def mean(data: Any) -> float:
 # def mean(data: Iterable) -> float:
 def mean(data: Iterable[float]) -> float:
     'Accurate arithmetic mean'
     data = list(data)
-    #  __c:  fsum keeps the accuracy better than sum (valuable occasional use cases)
+    #  __c:  fsum keeps the accuracy better than sum (valuable
+    #   occasional use cases)
     return fsum(data) / len(data)
 
 def transpose(matrix: Iterable[Iterable]) -> Iterable[tuple]:
     'Swap rows with columns for a 2-D array'
     return zip(*matrix)
 
-#  __c:  Type hints can be extracted as variables for succinctness and clarity
+#  __c:  Type hints can be extracted as variables for
+#   succinctness and clarity
 Point = Tuple[float, ...]
 Centroid = Point
 
@@ -33,19 +37,25 @@ def dist(p: Point, q: Point, sqrt=sqrt, fsum=fsum, zip=zip) -> float:
 
 
 # https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence
-#  __c:  You can be very specific about exactly what your function accepts and returns
-def assign_data(centroids: Sequence[Centroid], data: Iterable[Point]) -> Dict[Centroid, Sequence[Point]]:
+#  __c:  You can be very specific about exactly what your function
+#   accepts and returns
+def assign_data(centroids: Sequence[Centroid], data: Iterable[Point]) \
+        -> Dict[Centroid, Sequence[Point]]:
     'Assign data the closest centroid'
-    d : DefaultDict[Centroid, List[Point]] = defaultdict(list)
+    d: DefaultDict[Centroid, List[Point]] = defaultdict(list)
     for point in data:
-        #  __c:  Note how he does an argmin by use the "key" argument to "min" function
+        #  __c:  Note how he does an argmin by use the "key" argument
+        #   to "min" function
         centroid: Point = min(centroids, key=partial(dist, point))  # argmin_centroids(dist(centroid, point)) - type: ignore
+        # partial(dist, point) == lambda centroid: dist(point, centroid)
         d[centroid].append(point)
     return dict(d)
 
-def compute_centroids(groups: Iterable[Sequence[Point]]) -> List[Centroid]:
+def compute_centroids(groups: Iterable[Sequence[Point]]) \
+        -> List[Centroid]:
     'Compute the centroid of each group'
-    #  __c:  Note how we can nicely factor out and name logic using a lambda function:
+    #  __c:  Note how we can nicely factor out and name logic using
+    #   a lambda function:
     get_centroid = lambda group: tuple(map(mean, transpose(group)))
     return [get_centroid(group) for group in groups]
 
